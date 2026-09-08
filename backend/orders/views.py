@@ -2,9 +2,54 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CartItemSerializer,CartSerializer
-from .models import CartItem,Cart
+from .models import CartItem,Cart,Address
+from .serializers import AddressSerializer
 
-# Create your views here.
+
+class AddressView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self,request):
+       
+            addresses = Address.objects.filter(user = request.user)
+            serializer = AddressSerializer(addresses,many = True)
+            return Response(serializer.data)
+        
+
+
+
+    def post(self,request):
+        serializer  = AddressSerializer(data = request.data)
+        if serializer.is_valid():
+             serializer.save(user = request.user)
+             return Response(serializer.data)
+        return Response(serializer.errors, status = 400)
+class AddressDetailsView(APIView):
+        permission_classes = [IsAuthenticated]
+    
+        def delete(self,request,pk):
+            try:
+                address = Address.objects.get(user = request.user,pk = pk)
+                address.delete()
+                return Response(status=204)
+            except Address.DoesNotExist:
+                return Response({"error":"Hey i think you are not authorized to delete this address"},status=400)
+
+        def put(self,request,pk):
+            try:
+                address = Address.objects.get(user = request.user,pk = pk)
+                serializer = AddressSerializer(address,data = request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                return Response(serializer.errors,status=400)
+            except Address.DoesNotExist:
+                return Response({"error":"Not found"},status = 404)
+
+
+
+# ==============              =============
+# ============== Cart section =============
+# ==============              =============
 
 class CartView(APIView):
     permission_classes = [IsAuthenticated]

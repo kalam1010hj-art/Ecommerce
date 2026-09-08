@@ -31,6 +31,14 @@ class CartItem(models.Model):
     )
     quantity = models.PositiveIntegerField(default=1)
 
+    class Meta:
+     constraints = [
+        models.UniqueConstraint(
+            fields=["cart", "product"],
+            name="unique_product_per_cart"
+        )
+    ]
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pending"),

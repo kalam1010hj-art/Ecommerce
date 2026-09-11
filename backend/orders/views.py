@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .serializers import CartItemSerializer,CartSerializer
+from .serializers import CartItemSerializer,CartSerializer,CartItemCreateSerializer
 from .models import CartItem,Cart,Address
 from .serializers import AddressSerializer
 
@@ -62,7 +62,7 @@ class CartView(APIView):
            return Response({"error":"No cart found"},status=404)
     def post(self,request):
         self.permission_classes = [IsAuthenticated]
-        serializer  = CartItemSerializer(data =request.data)
+        serializer  = CartItemCreateSerializer(data =request.data)
         if serializer.is_valid():
             cart, Created = Cart.objects.get_or_create(user = request.user)
             product = serializer.validated_data["product"]

@@ -1,0 +1,106 @@
+.products {
+  width: 100%;
+  background: #ffffff;
+  min-height: calc(100vh - 70px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+/* Heading */
+
+.heading {
+  margin-bottom: 40px;
+}
+
+.heading h1 {
+  margin: 0;
+
+  color: #111827;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+.heading p {
+  margin: 10px 0 0;
+
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* Product Grid */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Tablet */
+
+@media (max-width: 1000px) {
+  .container {
+    padding: 50px 20px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+}
+
+/* Small Tablet */
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .products {
+    min-height: calc(100vh - 64px);
+  }
+
+  .container {
+    padding: 40px 18px;
+  }
+
+  .heading {
+    margin-bottom: 28px;
+    text-align: center;
+  }
+
+  .heading h1 {
+    font-size: 28px;
+  }
+
+  .heading p {
+    font-size: 14px;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Very Small Phones */
+
+@media (max-width: 380px) {
+  .container {
+    padding: 35px 14px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}

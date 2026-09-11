@@ -1,0 +1,299 @@
+.navbar {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container {
+  max-width: 1200px;
+  height: 70px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+
+.logo {
+  color: #111111;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: #2563eb;
+}
+
+/* Desktop Navigation */
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-left: auto;
+  margin-right: 40px;
+}
+
+.navLink {
+  color: #444444;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: #2563eb;
+}
+
+/* Right Actions */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.iconButton,
+.cartButton {
+  position: relative;
+
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+
+  color: #333333;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.icon {
+  width: 23px;
+  height: 23px;
+}
+
+.iconButton:hover,
+.cartButton:hover {
+  color: #2563eb;
+}
+
+/* Cart Count */
+
+.cartCount {
+  position: absolute;
+  top: 2px;
+  right: -1px;
+
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  border-radius: 50%;
+
+  font-size: 8px;
+  font-weight: 600;
+}
+
+/* Login */
+
+.loginButton {
+  padding: 9px 18px;
+
+  border-radius: 7px;
+
+  background: #2563eb;
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.loginButton:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Mobile Menu Button */
+
+.menuButton {
+  display: none;
+
+  width: 40px;
+  height: 40px;
+
+  padding: 8px;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+}
+
+.menuButton span {
+  display: block;
+
+  width: 23px;
+  height: 2px;
+
+  background: #222222;
+
+  border-radius: 2px;
+}
+
+/* Mobile Navigation */
+
+.mobileNav {
+  display: none;
+}
+
+/* =========================
+   Tablet / Mobile
+   ========================= */
+
+@media (max-width: 768px) {
+
+  .container {
+    height: 64px;
+    padding: 0 18px;
+  }
+
+  .desktopNav,
+  .loginButton {
+    display: none;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
+  .menuButton {
+    display: flex;
+  }
+
+  .mobileNav {
+    display: flex;
+
+    max-height: 0;
+    overflow: hidden;
+
+    flex-direction: column;
+
+    border-top: 1px solid transparent;
+
+    transition:
+      max-height 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .mobileNavOpen {
+    max-height: 300px;
+    border-top-color: #eeeeee;
+  }
+
+  .mobileNav a {
+    padding: 15px 20px;
+
+    color: #333333;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    border-bottom: 1px solid #f1f1f1;
+
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .mobileNav a:hover {
+    background: #f8fafc;
+    color: #2563eb;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+}
+
+/* Small Phones */
+
+@media (max-width: 400px) {
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .iconButton,
+  .cartButton,
+  .menuButton {
+    width: 36px;
+    height: 36px;
+  }
+}
+.logoutButton {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #f1f1f1;
+  color: #d32f2f;
+}
+
+.mobileLogout {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+.mobileLogout:hover {
+  color: #d32f2f;
+}

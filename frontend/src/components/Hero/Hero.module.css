@@ -1,0 +1,205 @@
+.hero {
+  width: 100%;
+  background: #f8fafc;
+}
+
+.container {
+  max-width: 1200px;
+  min-height: 420px;
+  margin: 0 auto;
+  padding: 35px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* Content */
+
+.content {
+  flex: 1;
+  max-width: 560px;
+}
+
+.tagline {
+  margin: 0 0 16px;
+
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.title {
+  margin: 0;
+
+  color: #111827;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+}
+
+.title span {
+  color: #2563eb;
+}
+
+.description {
+  max-width: 500px;
+  margin: 24px 0 32px;
+
+  color: #6b7280;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* Buttons */
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 12px 22px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.primaryButton {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.primaryButton:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.secondaryButton {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.secondaryButton:hover {
+  background: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+/* Image */
+
+.imageContainer {
+  flex: 1;
+  max-width: 520px;
+}
+
+.image {
+  display: block;
+
+  width: 100%;
+  height: 340px;
+
+  object-fit: cover;
+
+  border-radius: 18px;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .container {
+    gap: 35px;
+  }
+
+  .title {
+    font-size: 44px;
+  }
+
+  .image {
+    height: 350px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .container {
+    min-height: auto;
+    padding: 50px 18px;
+
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 40px;
+  }
+
+  .content {
+    max-width: none;
+    text-align: center;
+  }
+
+  .title {
+    font-size: clamp(38px, 10vw, 48px);
+    letter-spacing: -1.5px;
+  }
+
+  .description {
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 16px;
+  }
+
+  .buttons {
+    justify-content: center;
+  }
+
+  .imageContainer {
+    max-width: none;
+  }
+
+  .image {
+    height: 280px;
+  }
+}
+
+/* Small phones */
+
+@media (max-width: 400px) {
+  .container {
+    padding: 40px 14px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+
+  .description {
+    font-size: 15px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    text-align: center;
+  }
+
+  .image {
+    height: 230px;
+  }
+}

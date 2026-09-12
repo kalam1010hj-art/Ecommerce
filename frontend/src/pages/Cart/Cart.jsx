@@ -12,7 +12,7 @@ function Cart() {
   const [error, setError] = useState("");
 
   const imageUrl = (path) => {
-    return `http://127.0.0.1:8000/${path}`;
+    return `https://ecommerce-0lq7.onrender.com/${path}`;
   };
 
   if (isLoading) {

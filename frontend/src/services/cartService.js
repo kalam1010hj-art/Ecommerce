@@ -3,7 +3,7 @@ function getCart(){
     
     let  token = localStorage.getItem("accessToken")
     console.log("token",token)
-    return (axios.get("http://127.0.0.1:8000/cart/",
+    return (axios.get("https://ecommerce-0lq7.onrender.com/cart/",
  
  {       headers: {
     Authorization: `Token ${token}`,
@@ -16,7 +16,7 @@ export default getCart
 
 export function addToCart(productId){
   let  token = localStorage.getItem("accessToken")
-  return axios.post("http://127.0.0.1:8000/cart/",
+  return axios.post("https://ecommerce-0lq7.onrender.com/cart/",
     {
     product: productId,
     quantity: 1
@@ -30,7 +30,7 @@ export function addToCart(productId){
 export function updateCartItem(cartItemId, quantity) {
   let  token = localStorage.getItem("accessToken")
   return axios.put(
-    `http://127.0.0.1:8000/cart/info/${cartItemId}`,
+    `https://ecommerce-0lq7.onrender.com/cart/info/${cartItemId}`,
     {
       quantity: quantity
     },{
@@ -43,7 +43,7 @@ export function updateCartItem(cartItemId, quantity) {
 export function deleteCartItem(cartItemId){
   let  token = localStorage.getItem("accessToken")
   return axios.delete(
-    `http://127.0.0.1:8000/cart/info/${cartItemId}`,
+    `https://ecommerce-0lq7.onrender.com/cart/info/${cartItemId}`,
     {
       headers:{
         Authorization:`Token ${token}`,

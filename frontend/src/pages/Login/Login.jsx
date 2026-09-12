@@ -14,7 +14,7 @@ let {login} = useContext(AuthContext)
   console.log("Login rendered!")
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post("http://127.0.0.1:8000/account/login",{username:username,password:password})
+    axios.post("https://ecommerce-0lq7.onrender.com/account/login",{username:username,password:password})
     .then((response)=>{
         console.log(response.data)
         login(response.data.token,response.data.user)

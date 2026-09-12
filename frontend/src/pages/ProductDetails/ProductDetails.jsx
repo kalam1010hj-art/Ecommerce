@@ -56,7 +56,7 @@ function ProductDetails() {
   }
 
   const imageUrl = (imagePath) => {
-    return `http://127.0.0.1:8000${imagePath}`;
+    return `https://ecommerce-0lq7.onrender.com${imagePath}`;
   };
 
   const increaseQuantity = () => {

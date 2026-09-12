@@ -1,0 +1,114 @@
+.container {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  background: #f5f7fa;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.card h1 {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.nameRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #333;
+}
+
+.button {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: #333;
+}
+
+.button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.error {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #fff0f0;
+  color: #b42318;
+  font-size: 14px;
+}
+
+.loginText {
+  text-align: center;
+  margin-top: 25px;
+  color: #666;
+}
+
+.loginText a {
+  color: #111;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.loginText a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .card {
+    padding: 30px 20px;
+  }
+
+  .nameRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

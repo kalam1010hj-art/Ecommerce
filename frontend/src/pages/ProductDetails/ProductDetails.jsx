@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import styles from "./ProductDetails.module.css";
 import { getProduct } from "../../services/productServices";
-
+import { useContext } from "react";
+import { CartContext } from "../../context/CartContext";
 function ProductDetails() {
   const { id } = useParams();
+  let {AddToCart} = useContext(CartContext)
 
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -71,12 +73,7 @@ function ProductDetails() {
     }
   };
 
-  const addToCart = () => {
-    console.log("Product:", product.id);
-    console.log("Quantity:", quantity);
-
-    // Cart API will be connected here later.
-  };
+ 
 
   return (
     <main className={styles.productDetails}>
@@ -209,7 +206,7 @@ function ProductDetails() {
             {/* Add to Cart */}
             <button
               className={styles.cartButton}
-              onClick={addToCart}
+              onClick={()=>{AddToCart(product.id)}}
               disabled={product.stock === 0}
             >
               {product.stock > 0

@@ -11,9 +11,7 @@ function Cart() {
   const [updatingItems, setUpdatingItems] = useState({});
   const [error, setError] = useState("");
 
-  const imageUrl = (path) => {
-    return `${path}`;
-  };
+  const imageUrl = (path) => `${path}`;
 
   if (isLoading) {
     return (
@@ -106,6 +104,14 @@ function Cart() {
                 src={imageUrl(item.product.images[0].image)}
                 alt={item.product.name}
                 className={styles.productImage}
+                onClick={() => navigate(`/products/${item.product.id}`)}
+                role="link"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    navigate(`/products/${item.product.id}`);
+                  }
+                }}
               />
 
               <div className={styles.productInfo}>

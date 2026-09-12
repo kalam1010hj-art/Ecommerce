@@ -1,9 +1,11 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import styles from "./Cart.module.css";
 import { updateCartItem, deleteCartItem } from "../../services/cartService";
 
 function Cart() {
+  const navigate = useNavigate();
   const { cart, setCart, isLoading } = useContext(CartContext);
 
   const [updatingItems, setUpdatingItems] = useState({});
@@ -36,21 +38,14 @@ function Cart() {
   }
 
   function updateQuantity(cartItemId, newQuantity) {
-    if (newQuantity < 1) {
-      return;
-    }
+    if (newQuantity < 1) return;
 
     setError("");
-
-    setUpdatingItems((previous) => ({
-      ...previous,
-      [cartItemId]: true,
-    }));
+    setUpdatingItems((previous) => ({ ...previous, [cartItemId]: true }));
 
     updateCartItem(cartItemId, newQuantity)
       .then((response) => {
         const updatedItem = response.data;
-
         setCart((previousCart) => ({
           ...previousCart,
           items: previousCart.items.map((item) =>
@@ -63,10 +58,7 @@ function Cart() {
         setError("Unable to update quantity. Please try again.");
       })
       .finally(() => {
-        setUpdatingItems((previous) => ({
-          ...previous,
-          [cartItemId]: false,
-        }));
+        setUpdatingItems((previous) => ({ ...previous, [cartItemId]: false }));
       });
   }
 
@@ -74,17 +66,10 @@ function Cart() {
     const confirmed = window.confirm(
       "Are you sure you want to remove this item from your cart?",
     );
-
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
     setError("");
-
-    setUpdatingItems((previous) => ({
-      ...previous,
-      [id]: true,
-    }));
+    setUpdatingItems((previous) => ({ ...previous, [id]: true }));
 
     deleteCartItem(id)
       .then(() => {
@@ -98,12 +83,14 @@ function Cart() {
         setError("Unable to remove item. Please try again.");
       })
       .finally(() => {
-        setUpdatingItems((previous) => ({
-          ...previous,
-          [id]: false,
-        }));
+        setUpdatingItems((previous) => ({ ...previous, [id]: false }));
       });
   }
+
+  const total = cart.items.reduce(
+    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    0,
+  );
 
   return (
     <div className={styles.container}>
@@ -123,7 +110,6 @@ function Cart() {
 
               <div className={styles.productInfo}>
                 <h2>{item.product.name}</h2>
-
                 <p className={styles.price}>
                   ₹{Number(item.product.price).toFixed(2)}
                 </p>
@@ -138,9 +124,7 @@ function Cart() {
                   >
                     -
                   </button>
-
                   <span>{item.quantity}</span>
-
                   <button
                     disabled={
                       updatingItems[item.id] ||
@@ -171,30 +155,22 @@ function Cart() {
 
         <div className={styles.summary}>
           <h2>Order Summary</h2>
-
           <div className={styles.summaryRow}>
             <span>Items</span>
             <span>{cart.items.length}</span>
           </div>
-
           <hr />
-
           <div className={styles.total}>
             <span>Total</span>
-
-            <span>
-              ₹
-              {cart.items
-                .reduce(
-                  (total, item) =>
-                    total + Number(item.product.price) * item.quantity,
-                  0,
-                )
-                .toFixed(2)}
-            </span>
+            <span>₹{total.toFixed(2)}</span>
           </div>
 
-          <button className={styles.checkoutButton}>Proceed to Checkout</button>
+          <button
+            className={styles.checkoutButton}
+            onClick={() => navigate("/checkout")}
+          >
+            Proceed to Checkout
+          </button>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { CartContext } from "../../context/CartContext";
 function ProductCard({ product }) {
   let { AddToCart } = useContext(CartContext);
   const imageUrl = product.images?.[0]?.image
-    ? `http://127.0.0.1:8000${product.images[0].image}`
+    ? `${product.images[0].image}`
     : "/placeholder.jpg";
   
   return (

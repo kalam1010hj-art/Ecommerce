@@ -12,7 +12,7 @@ function Cart() {
   const [error, setError] = useState("");
 
   const imageUrl = (path) => {
-    return `https://ecommerce-0lq7.onrender.com/${path}`;
+    return `${path}`;
   };
 
   if (isLoading) {

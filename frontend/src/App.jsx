@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home/Home";
 import Products from "./pages/Products/Products";
+import Categories from "./pages/Categories/Categories";
 import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Cart from "./pages/Cart/Cart";
 import Checkout from "./pages/Checkout/Checkout";
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/categories" element={<Categories />} />
 
         {/* Auth routes */}
         <Route path="/login" element={<Login />} />

@@ -1,0 +1,42 @@
+.container {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+}
+
+.card {
+  width: min(100%, 560px);
+  padding: 40px 28px;
+  text-align: center;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.08);
+}
+
+.icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.note {
+  color: #6b7280;
+  margin: 16px 0 26px;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 20px;
+  background: #111827;
+  color: #ffffff;
+  cursor: pointer;
+}

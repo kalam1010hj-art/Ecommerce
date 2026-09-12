@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.contrib.auth.models import User
 from products.models import Product
 
@@ -18,6 +15,7 @@ class Cart(models.Model):
     def __str__(self):
         return f"{self.user.username}'s cart"
 
+
 class CartItem(models.Model):
     cart = models.ForeignKey(
         Cart,
@@ -32,12 +30,13 @@ class CartItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
-     constraints = [
-        models.UniqueConstraint(
-            fields=["cart", "product"],
-            name="unique_product_per_cart"
-        )
-    ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cart", "product"],
+                name="unique_product_per_cart"
+            )
+        ]
+
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -63,11 +62,32 @@ class Order(models.Model):
         max_digits=12,
         decimal_places=2
     )
+
+    # Razorpay identifiers are stored only on the backend.
+    razorpay_order_id = models.CharField(
+        max_length=100,
+        unique=True,
+        null=True,
+        blank=True
+    )
+    razorpay_payment_id = models.CharField(
+        max_length=100,
+        unique=True,
+        null=True,
+        blank=True
+    )
+    razorpay_signature = models.CharField(
+        max_length=255,
+        blank=True,
+        default=""
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"Order #{self.id} - {self.user.username}"
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(
@@ -75,19 +95,18 @@ class OrderItem(models.Model):
         on_delete=models.CASCADE,
         related_name="items"
     )
-
     product = models.ForeignKey(
         Product,
         on_delete=models.PROTECT,
         related_name="order_items"
     )
-
     quantity = models.PositiveIntegerField()
-
     price = models.DecimalField(
         max_digits=12,
         decimal_places=2
     )
+
+
 class Address(models.Model):
     user = models.ForeignKey(
         User,

@@ -1,0 +1,76 @@
+.container {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 20px;
+}
+
+.card {
+  width: min(100%, 620px);
+  padding: 32px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.08);
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 28px;
+}
+
+.items {
+  display: grid;
+  gap: 14px;
+}
+
+.row,
+.total {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.row {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.total {
+  margin: 24px 0;
+  font-size: 1.25rem;
+}
+
+.error {
+  padding: 12px;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  margin-bottom: 16px;
+}
+
+.payButton,
+.backButton {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.payButton {
+  background: #111827;
+  color: white;
+}
+
+.payButton:disabled,
+.backButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.backButton {
+  margin-top: 10px;
+  background: #f3f4f6;
+  color: #111827;
+}

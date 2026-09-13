@@ -10,9 +10,10 @@ function Navbar() {
   const navigate = useNavigate();
 
   const { cart } = useContext(CartContext);
-  const { token, logout } = useContext(AuthContext);
+  const { token, user, logout } = useContext(AuthContext);
 
   const cartLength = cart ? cart.items.length : 0;
+  const initials = (user?.first_name?.[0] || user?.username?.[0] || "U").toUpperCase();
 
   function handleLogout() {
     const confirmLogout = window.confirm("Are you sure you want to logout?");
@@ -20,10 +21,10 @@ function Navbar() {
     if (confirmLogout) {
       logout();
       setMenuOpen(false);
+      navigate("/");
     }
   }
 
-  // Send the search term to the Products page as a URL query parameter.
   function handleSearch(event) {
     event.preventDefault();
     const value = searchInput.trim();
@@ -47,7 +48,6 @@ function Navbar() {
         </nav>
 
         <div className={styles.actions}>
-          {/* Search */}
           <form className={styles.navSearch} onSubmit={handleSearch}>
             <input
               value={searchInput}
@@ -75,7 +75,12 @@ function Navbar() {
           {!token ? (
             <Link to="/login" className={styles.loginButton}>Login</Link>
           ) : (
-            <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+            <>
+              <Link to="/profile" className={styles.profileButton} aria-label="My profile" title="My profile">
+                {initials}
+              </Link>
+              <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+            </>
           )}
 
           <button
@@ -104,6 +109,7 @@ function Navbar() {
         <Link to="/products" onClick={() => setMenuOpen(false)}>Products</Link>
         <Link to="/categories" onClick={() => setMenuOpen(false)}>Categories</Link>
         <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart</Link>
+        {token && <Link to="/profile" onClick={() => setMenuOpen(false)}>My Profile</Link>}
 
         {!token ? (
           <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>

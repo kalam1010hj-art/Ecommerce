@@ -95,6 +95,7 @@ function Login() {
             <div className={styles.formGroup}>
               <label>Password</label>
               <input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Link className={styles.forgotLink} to="/forgot-password">Forgot password?</Link>
             </div>
             <button disabled={loading} type="submit" className={styles.button}>
               {loading ? "Logging in..." : "Login"}

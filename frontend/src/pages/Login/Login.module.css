@@ -16,27 +16,41 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
-.card h1 {
-  text-align: center;
-  margin-bottom: 8px;
+.card h1 { text-align: center; margin-bottom: 8px; }
+.subtitle { text-align: center; color: #666; margin-bottom: 24px; }
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: #f1f2f4;
+  border-radius: 8px;
+  margin-bottom: 22px;
 }
 
-.subtitle {
-  text-align: center;
-  color: #666;
-  margin-bottom: 30px;
-}
-
-.formGroup {
-  margin-bottom: 20px;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 7px;
+.tabs button {
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
   font-weight: 600;
 }
 
+.tabs .activeTab { background: white; box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+
+.error {
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border-radius: 7px;
+  background: #fff0f0;
+  color: #b42318;
+  font-size: 14px;
+}
+
+.formGroup { margin-bottom: 20px; }
+.formGroup label { display: block; margin-bottom: 7px; font-weight: 600; }
 .formGroup input {
   width: 100%;
   padding: 12px;
@@ -45,11 +59,9 @@
   font-size: 15px;
   box-sizing: border-box;
 }
-
-.formGroup input:focus {
-  outline: none;
-  border-color: #333;
-}
+.formGroup input:focus { outline: none; border-color: #333; }
+.formGroup input:disabled { background: #f5f5f5; color: #666; }
+.formGroup small { display: block; margin-top: 7px; color: #777; font-size: 12px; }
 
 .button {
   width: 100%;
@@ -61,25 +73,23 @@
   font-size: 16px;
   cursor: pointer;
 }
+.button:hover { background: #333; }
+.button:disabled { opacity: .6; cursor: not-allowed; }
 
-.button:hover {
-  background: #333;
-}
-
-.registerText {
-  text-align: center;
-  margin-top: 25px;
-  color: #666;
-}
-
-.registerText a {
-  color: #111;
+.resendButton {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 12px;
+  margin-top: 5px;
+  cursor: pointer;
+  color: #333;
   font-weight: 600;
-  text-decoration: none;
 }
+
+.registerText { text-align: center; margin-top: 25px; color: #666; }
+.registerText a { color: #111; font-weight: 600; text-decoration: none; }
 
 @media (max-width: 500px) {
-  .card {
-    padding: 30px 20px;
-  }
+  .card { padding: 30px 20px; }
 }

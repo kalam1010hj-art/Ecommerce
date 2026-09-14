@@ -1,8 +1,9 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./Login.module.css";
 import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
 
 const API_URL = "https://ecommerce-0lq7.onrender.com/account";
 
@@ -10,7 +11,7 @@ function Login() {
   const [mode, setMode] = useState("password");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,10 +39,10 @@ function Login() {
     setError("");
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/mobile/send-otp`, { phone });
+      await axios.post(`${API_URL}/email/send-otp`, { email });
       setOtpSent(true);
     } catch (err) {
-      setError(err.response?.data?.detail || "Could not send OTP.");
+      setError(err.response?.data?.detail || "Could not send OTP email.");
     } finally {
       setLoading(false);
     }
@@ -52,11 +53,24 @@ function Login() {
     setError("");
     setLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/mobile/verify-otp`, { phone, otp });
+      const response = await axios.post(`${API_URL}/email/verify-otp`, { email, otp });
       login(response.data.token, response.data.user);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.detail || "Invalid or expired OTP.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resendOtp = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      await axios.post(`${API_URL}/email/send-otp`, { email });
+      setOtp("");
+    } catch (err) {
+      setError(err.response?.data?.detail || "Could not resend OTP email.");
     } finally {
       setLoading(false);
     }
@@ -79,8 +93,8 @@ function Login() {
           <button type="button" className={mode === "password" ? styles.activeTab : ""} onClick={() => switchMode("password")}>
             Password
           </button>
-          <button type="button" className={mode === "mobile" ? styles.activeTab : ""} onClick={() => switchMode("mobile")}>
-            Mobile OTP
+          <button type="button" className={mode === "email" ? styles.activeTab : ""} onClick={() => switchMode("email")}>
+            Email OTP
           </button>
         </div>
 
@@ -104,15 +118,32 @@ function Login() {
         ) : (
           <form onSubmit={otpSent ? verifyOtp : sendOtp}>
             <div className={styles.formGroup}>
-              <label>Mobile Number</label>
-              <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+91 9876543210" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={otpSent} required />
-              <small>We'll send a one-time password by SMS.</small>
+              <label>Email Address</label>
+              <input
+                type="email"
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={otpSent}
+                required
+              />
+              <small>We'll send a 6-digit one-time password to your email.</small>
             </div>
 
             {otpSent && (
               <div className={styles.formGroup}>
-                <label>OTP</label>
-                <input type="text" inputMode="numeric" autoComplete="one-time-code" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 10))} required />
+                <label>Verification Code</label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  placeholder="Enter 6-digit OTP"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                  maxLength={6}
+                  required
+                />
               </div>
             )}
 
@@ -121,9 +152,14 @@ function Login() {
             </button>
 
             {otpSent && (
-              <button type="button" className={styles.resendButton} disabled={loading} onClick={() => { setOtpSent(false); setOtp(""); }}>
-                Change number
-              </button>
+              <div className={styles.resendRow}>
+                <button type="button" className={styles.resendButton} disabled={loading} onClick={resendOtp}>
+                  Resend OTP
+                </button>
+                <button type="button" className={styles.resendButton} disabled={loading} onClick={() => switchMode("email")}>
+                  Change email
+                </button>
+              </div>
             )}
           </form>
         )}

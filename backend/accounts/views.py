@@ -1,11 +1,11 @@
 import os
 import re
 import secrets
-import string
 
 import requests
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -15,27 +15,63 @@ from .models import UserProfile
 from .serializer import UserSerializer, LoginSerializer
 
 
-def normalize_phone(phone):
-    """Return a simple E.164-style phone number, e.g. +919876543210."""
-    phone = str(phone or "").strip().replace(" ", "").replace("-", "")
-    if phone.startswith("00"):
-        phone = "+" + phone[2:]
-    if not phone.startswith("+"):
-        phone = "+91" + phone
-    if not re.fullmatch(r"\+[1-9]\d{7,14}", phone):
-        raise ValueError("Enter a valid mobile number with country code.")
-    return phone
+def resend_configured():
+    return bool(os.getenv("RESEND_API_KEY") and os.getenv("DEFAULT_FROM_EMAIL"))
 
 
-def twilio_configured():
-    return all(
-        os.getenv(key)
-        for key in ("TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_VERIFY_SERVICE_SID")
-    )
+def normalize_email(email):
+    email = str(email or "").strip().lower()
+    if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
+        raise ValueError("Enter a valid email address.")
+    return email
 
 
-def twilio_url(path):
-    return f"https://verify.twilio.com/v2/Services/{os.getenv('TWILIO_VERIFY_SERVICE_SID')}/{path}"
+def otp_cache_key(email):
+    return f"email_otp:{email}"
+
+
+def send_email_otp(email):
+    otp = f"{secrets.randbelow(1_000_000):06d}"
+    cache.set(otp_cache_key(email), otp, timeout=300)
+
+    payload = {
+        "from": os.getenv("DEFAULT_FROM_EMAIL"),
+        "to": [email],
+        "subject": "Your ShopCart verification code",
+        "html": f"""
+        <div style=\"font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:24px\">
+          <h2 style=\"margin-bottom:8px\">ShopCart Email Verification</h2>
+          <p>Use the verification code below to continue:</p>
+          <div style=\"font-size:32px;font-weight:700;letter-spacing:8px;padding:18px 0\">{otp}</div>
+          <p>This code expires in <strong>5 minutes</strong>.</p>
+          <p style=\"color:#666;font-size:13px\">If you did not request this code, you can safely ignore this email.</p>
+        </div>
+        """,
+    }
+
+    try:
+        response = requests.post(
+            "https://api.resend.com/emails",
+            json=payload,
+            headers={
+                "Authorization": f"Bearer {os.getenv('RESEND_API_KEY')}",
+                "Content-Type": "application/json",
+            },
+            timeout=10,
+        )
+    except requests.RequestException:
+        cache.delete(otp_cache_key(email))
+        return False, "Could not contact the email provider."
+
+    if not response.ok:
+        cache.delete(otp_cache_key(email))
+        try:
+            detail = response.json().get("message", "Unable to send OTP email.")
+        except ValueError:
+            detail = "Unable to send OTP email."
+        return False, detail
+
+    return True, None
 
 
 class RegisterView(APIView):
@@ -67,96 +103,53 @@ class LoginView(APIView):
         return Response(serializer.errors, status=400)
 
 
-class SendMobileOTPView(APIView):
-    """Send a one-time password using Twilio Verify."""
+class SendEmailOTPView(APIView):
+    """Generate and send a one-time password to an existing user's email."""
 
     permission_classes = [AllowAny]
 
     def post(self, request):
-        if not twilio_configured():
-            return Response({"detail": "Mobile OTP is not configured on the server yet."}, status=503)
+        if not resend_configured():
+            return Response({"detail": "Email OTP is not configured on the server yet."}, status=503)
 
         try:
-            phone = normalize_phone(request.data.get("phone"))
+            email = normalize_email(request.data.get("email"))
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=400)
 
-        try:
-            response = requests.post(
-                twilio_url("Verifications"),
-                data={"To": phone, "Channel": "sms"},
-                auth=(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_AUTH_TOKEN")),
-                timeout=10,
-            )
-        except requests.RequestException:
-            return Response({"detail": "Could not contact the SMS provider."}, status=502)
+        if not User.objects.filter(email__iexact=email, is_active=True).exists():
+            return Response({"detail": "No active account is registered with this email."}, status=404)
 
-        if not response.ok:
-            try:
-                detail = response.json().get("message", "Unable to send OTP.")
-            except ValueError:
-                detail = "Unable to send OTP."
-            return Response({"detail": detail}, status=400)
+        success, detail = send_email_otp(email)
+        if not success:
+            return Response({"detail": detail}, status=502)
 
-        return Response({"detail": "OTP sent successfully."})
+        return Response({"detail": "OTP sent successfully to your email."})
 
 
-class VerifyMobileOTPView(APIView):
-    """Verify the OTP, create the account when necessary, and issue an auth token."""
+class VerifyEmailOTPView(APIView):
+    """Verify an email OTP and issue an authentication token."""
 
     permission_classes = [AllowAny]
 
     def post(self, request):
-        if not twilio_configured():
-            return Response({"detail": "Mobile OTP is not configured on the server yet."}, status=503)
-
         try:
-            phone = normalize_phone(request.data.get("phone"))
+            email = normalize_email(request.data.get("email"))
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=400)
 
         code = str(request.data.get("otp", "")).strip()
-        if not re.fullmatch(r"\d{4,10}", code):
-            return Response({"detail": "Enter the OTP sent to your mobile."}, status=400)
+        if not re.fullmatch(r"\d{6}", code):
+            return Response({"detail": "Enter the 6-digit OTP sent to your email."}, status=400)
 
-        try:
-            response = requests.post(
-                twilio_url("VerificationCheck"),
-                data={"To": phone, "Code": code},
-                auth=(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_AUTH_TOKEN")),
-                timeout=10,
-            )
-        except requests.RequestException:
-            return Response({"detail": "Could not contact the SMS provider."}, status=502)
-
-        if not response.ok:
-            try:
-                detail = response.json().get("message", "OTP verification failed.")
-            except ValueError:
-                detail = "OTP verification failed."
-            return Response({"detail": detail}, status=400)
-
-        try:
-            verification_status = response.json().get("status")
-        except ValueError:
-            verification_status = None
-
-        if verification_status != "approved":
+        stored_otp = cache.get(otp_cache_key(email))
+        if not stored_otp or not secrets.compare_digest(str(stored_otp), code):
             return Response({"detail": "Invalid or expired OTP."}, status=401)
 
-        profile = UserProfile.objects.select_related("user").filter(phone_number=phone).first()
-        if profile:
-            user = profile.user
-        else:
-            # New mobile users receive a normal Django account without a password login requirement.
-            suffix = phone.replace("+", "")
-            username = f"mobile_{suffix}"
-            if User.objects.filter(username=username).exists():
-                username = f"{username}_{secrets.token_hex(3)}"
-
-            password = "".join(secrets.choice(string.ascii_letters + string.digits) for _ in range(32))
-            user = User.objects.create_user(username=username, password=password)
-            UserProfile.objects.create(user=user, phone_number=phone)
+        cache.delete(otp_cache_key(email))
+        user = User.objects.filter(email__iexact=email, is_active=True).first()
+        if not user:
+            return Response({"detail": "No active account is registered with this email."}, status=404)
 
         token, _ = Token.objects.get_or_create(user=user)
         return Response({"user": UserSerializer(user).data, "token": token.key})
